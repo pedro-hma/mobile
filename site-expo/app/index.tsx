@@ -1,10 +1,13 @@
 import Task from "@/components/Task";
+import { useTaskFilterStore } from "@/zustand";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function Index() {
   const [idade, setIdade] = useState("");
+  const taskDoneFilter = useTaskFilterStore((state) => state.taskDoneFilter);
+
   function calcularAnoNascimento() {
     const idadeNum = parseInt(idade);
     if (isNaN(idadeNum) || idadeNum < 0) {
@@ -14,24 +17,38 @@ export default function Index() {
     return (anoAtual - idadeNum).toString();
   }
   return (
-    <ScrollView style={styles.container}contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+    >
       <Text style={styles.title}>Olá Turma!!!</Text>
       <View style={styles.hr} />
       <View style={styles.containerIdade}>
         <Text>Digite a sua idade</Text>
-        <TextInput style={styles.input}keyboardType="numeric"value={idade}onChangeText={setIdade}/>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={idade}
+          onChangeText={setIdade}
+        />
         <Text>Você nasceu em</Text>
-        <TextInput style={styles.input}editable={false}value={calcularAnoNascimento()}/>
+        <TextInput
+          style={styles.input}
+          readOnly
+          value={calcularAnoNascimento()}
+        />
         <View style={styles.hr} />
-        <Link href="/myTodoList">Lista de Tarefas</Link>
+        <Link href="myTodoList">
+          Lista de Tarefas (filtro {taskDoneFilter ? "ativado" : "desativado"})
+        </Link>
         <View style={styles.hr} />
-
-        <Task task={{ description: "Tarefa teste", done: true }}onChange={() => {}}onDelete={() => {}}disabled={false}/>
-        <Task task={{ description: "Outro teste", done: false }}onChange={() => {}}onDelete={() => {}}disabled={false}/>
+        <Task task={{ description: "Tarefa teste", done: true }} />
+        <Task task={{ description: "Outro teste", done: false }} />
       </View>
     </ScrollView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -40,7 +57,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 20,
   },
   title: {
     fontSize: 24,
@@ -56,8 +72,6 @@ const styles = StyleSheet.create({
     backgroundColor: "yellow",
     width: "90%",
     alignItems: "center",
-    padding: 20,
-    borderRadius: 10,
   },
   input: {
     height: 40,
@@ -67,6 +81,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
     textAlign: "center",
-    backgroundColor: "white",
   },
 });

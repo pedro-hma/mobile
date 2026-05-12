@@ -7,7 +7,7 @@ export function Providers({ children }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 30 * 1000, // Optional: data is considered fresh for 30 seconds
+            staleTime: 3 * 1000, // Optional: data is considered fresh for 30 seconds
           },
         },
       }),

@@ -1,89 +1,158 @@
 import { addTask, deleteTask, getTasks, updateTask } from "@/api";
 import Task from "@/components/Task";
+import { useTaskFilterStore } from "@/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link } from "expo-router";
 import { useState } from "react";
 import {
+  ActivityIndicator,
   Button,
-  ScrollView,
+  FlatList,
   StyleSheet,
+  Switch,
   Text,
   TextInput,
   View,
 } from "react-native";
 
+type TaskType = {
+  objectId: string;
+  description: string;
+  done: boolean;
+};
+
+type TasksResponse = {
+  results: TaskType[];
+};
+
 export default function MyTodoList() {
   const queryClient = useQueryClient();
-  const { data, isFetching, error } = useQuery({
+
+  const { data, isFetching, error } = useQuery<TasksResponse>({
     queryKey: ["tasks"],
     queryFn: getTasks,
   });
+
   const addMutation = useMutation({
     mutationFn: addTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
+
   const updateMutation = useMutation({
     mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
+
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
+
   const [description, setDescription] = useState("");
 
-  function handleSubmit(evt) {
-    evt.preventDefault();
-    if (!description) {
+  const { taskDoneFilter, setTaskDoneFilter } = useTaskFilterStore(
+    (state: any) => state
+  );
+
+  let tasks: TaskType[] = data?.results || [];
+
+  if (taskDoneFilter) {
+    tasks = tasks.filter((task: TaskType) => !task.done);
+  }
+
+  function handleSubmit() {
+    if (!description.trim()) {
       alert("Descrição é um campo obrigatório!");
       return;
     }
+
     addMutation.mutate({ description });
     setDescription("");
   }
 
-  function handleChange(updatedTask) {
+  function handleChange(updatedTask: TaskType) {
     updateMutation.mutate(updatedTask);
   }
 
-  function handleDelete(task) {
+  function handleDelete(task: TaskType) {
     deleteMutation.mutate(task);
   }
+const styles = StyleSheet.create({
+  hr: {
+    height: 1,
+    width: "90%",
+    backgroundColor: "black",
+    marginTop: 10,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
 
+  input: {
+    height: 40,
+    width: "90%",
+    borderWidth: 1,
+    borderColor: "#999",
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    backgroundColor: "white",
+  },
+
+  containerFilter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+});
   return (
     <>
-      <Text>Lista de Tarefas</Text>
-      <View style={styles.hr} />
-      {error && <Text>Erro: {error}</Text>}
-      {isFetching && <Text>Carregando dados do servidor...</Text>}
-      <View style={styles.hr} />
+      {error && <Text>Erro: {error.message}</Text>}
+
+      {isFetching && <ActivityIndicator size="large" />}
+
+      {(error || isFetching) && <View style={styles.hr} />}
+
       <View>
         <TextInput
+          style={styles.input}
           placeholder="Descrição da tarefa"
           value={description}
           onChangeText={setDescription}
         />
+
         <Button
           disabled={addMutation.isPending}
           title="Adicionar"
           onPress={handleSubmit}
         />
       </View>
+
+      <View style={styles.containerFilter}>
+        <Text>Ocultar tarefas concluídas</Text>
+
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor="#f5dd4b"
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={setTaskDoneFilter}
+          value={taskDoneFilter}
+        />
+      </View>
+
       <View style={styles.hr} />
-      {data?.results.length === 0 && (
-        <p>Adicione uma tarefa para exibir aqui.</p>
-      )}
-      <ScrollView>
-        {data?.results.map((task) => (
+
+      <FlatList
+        data={tasks}
+        renderItem={({ item }: { item: TaskType }) => (
           <Task
-            key={task.objectId}
-            task={task}
+            task={item}
             onChange={handleChange}
             onDelete={handleDelete}
             disabled={
@@ -92,53 +161,9 @@ export default function MyTodoList() {
               deleteMutation.isPending
             }
           />
-        ))}
-      </ScrollView>
-      <View style={styles.hr} />
-      <Link href="/">Voltar</Link>
-      <View style={styles.hr} />
-      <Button
-        onPress={async () => {
-          const backEndTasks = await getTasks();
-          console.log("backEndTasks", backEndTasks.data);
-        }}
-        title="Buscar tarefas no servidor"
+        )}
+        keyExtractor={(task: TaskType) => task.objectId}
       />
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "beige",
-  },
-  contentContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  hr: {
-    height: 1,
-    width: "90%",
-    backgroundColor: "black",
-    marginVertical: 30,
-  },
-  containerIdade: {
-    backgroundColor: "yellow",
-    width: "90%",
-    alignItems: "center",
-  },
-  input: {
-    height: 40,
-    width: "80%",
-    borderWidth: 1,
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 10,
-    textAlign: "center",
-  },
-});
