@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Button,
   FlatList,
   StyleSheet,
@@ -14,20 +15,16 @@ import {
   View,
 } from "react-native";
 
+// ✅ Definindo o tipo Task
 type TaskType = {
   objectId: string;
   description: string;
   done: boolean;
 };
 
-type TasksResponse = {
-  results: TaskType[];
-};
-
 export default function MyTodoList() {
   const queryClient = useQueryClient();
-
-  const { data, isFetching, error } = useQuery<TasksResponse>({
+  const { data, isFetching, error } = useQuery({
     queryKey: ["tasks"],
     queryFn: getTasks,
   });
@@ -50,73 +47,45 @@ export default function MyTodoList() {
     mutationFn: deleteTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      setDescription("");
     },
   });
 
   const [description, setDescription] = useState("");
-
   const { taskDoneFilter, setTaskDoneFilter } = useTaskFilterStore(
-    (state: any) => state
+    (state) => state
   );
 
   let tasks: TaskType[] = data?.results || [];
-
   if (taskDoneFilter) {
-    tasks = tasks.filter((task: TaskType) => !task.done);
+    tasks = tasks.filter((task) => !task.done);
   }
 
+  // ✅ Função para adicionar tarefa
   function handleSubmit() {
-    if (!description.trim()) {
-      alert("Descrição é um campo obrigatório!");
+    if (!description) {
+      Alert.alert("Erro", "Descrição é um campo obrigatório!");
       return;
     }
-
     addMutation.mutate({ description });
-    setDescription("");
   }
 
+  // ✅ Função para atualizar tarefa
   function handleChange(updatedTask: TaskType) {
     updateMutation.mutate(updatedTask);
   }
 
+  // ✅ Função para deletar tarefa
   function handleDelete(task: TaskType) {
     deleteMutation.mutate(task);
   }
-const styles = StyleSheet.create({
-  hr: {
-    height: 1,
-    width: "90%",
-    backgroundColor: "black",
-    marginTop: 10,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
 
-  input: {
-    height: 40,
-    width: "90%",
-    borderWidth: 1,
-    borderColor: "#999",
-    marginVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    backgroundColor: "white",
-  },
-
-  containerFilter: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginTop: 10,
-  },
-});
   return (
     <>
-      {error && <Text>Erro: {error.message}</Text>}
+      {/* ✅ Convertendo o erro para string */}
+      {error && <Text>Erro: {(error as Error).message}</Text>}
 
       {isFetching && <ActivityIndicator size="large" />}
-
       {(error || isFetching) && <View style={styles.hr} />}
 
       <View>
@@ -126,7 +95,6 @@ const styles = StyleSheet.create({
           value={description}
           onChangeText={setDescription}
         />
-
         <Button
           disabled={addMutation.isPending}
           title="Adicionar"
@@ -136,10 +104,9 @@ const styles = StyleSheet.create({
 
       <View style={styles.containerFilter}>
         <Text>Ocultar tarefas concluídas</Text>
-
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor="#f5dd4b"
+          thumbColor={"#f5dd4b"}
           ios_backgroundColor="#3e3e3e"
           onValueChange={setTaskDoneFilter}
           value={taskDoneFilter}
@@ -150,7 +117,7 @@ const styles = StyleSheet.create({
 
       <FlatList
         data={tasks}
-        renderItem={({ item }: { item: TaskType }) => (
+        renderItem={({ item }) => (
           <Task
             task={item}
             onChange={handleChange}
@@ -162,8 +129,51 @@ const styles = StyleSheet.create({
             }
           />
         )}
-        keyExtractor={(task: TaskType) => task.objectId}
+        keyExtractor={(task) => task.objectId}
       />
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "beige",
+  },
+  contentContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
+  hr: {
+    height: 1,
+    width: "90%",
+    backgroundColor: "black",
+    marginTop: 10,
+    marginBottom: 20,
+    alignSelf: "center",
+  },
+  containerIdade: {
+    backgroundColor: "yellow",
+    width: "90%",
+    alignItems: "center",
+  },
+  input: {
+    height: 40,
+    width: "80%",
+    borderWidth: 1,
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 10,
+    textAlign: "center",
+  },
+  containerFilter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+  },
+});

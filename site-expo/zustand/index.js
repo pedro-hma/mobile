@@ -16,3 +16,17 @@ export const useTaskFilterStore = create(
     },
   ),
 );
+
+export const useUserStore = create(
+  persist(
+    (set) => ({
+      loggedUser: null,
+      setLoggedUser: (user) => set({ loggedUser: user }),
+      removeLoggedUser: () => set({ loggedUser: null }),
+    }),
+    {
+      name: "loggedUser-storage",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);

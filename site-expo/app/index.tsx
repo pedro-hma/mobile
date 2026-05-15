@@ -1,5 +1,4 @@
-import Task from "@/components/Task";
-import { useTaskFilterStore } from "@/zustand";
+import { useTaskFilterStore, useUserStore } from "@/zustand";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
@@ -7,6 +6,7 @@ import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 export default function Index() {
   const [idade, setIdade] = useState("");
   const taskDoneFilter = useTaskFilterStore((state) => state.taskDoneFilter);
+  const loggedUser = useUserStore((state) => state.loggedUser);
 
   function calcularAnoNascimento() {
     const idadeNum = parseInt(idade);
@@ -42,8 +42,11 @@ export default function Index() {
           Lista de Tarefas (filtro {taskDoneFilter ? "ativado" : "desativado"})
         </Link>
         <View style={styles.hr} />
-        <Task task={{ description: "Tarefa teste", done: true }} />
-        <Task task={{ description: "Outro teste", done: false }} />
+        <Text style={styles.username}>
+          Usuário Logado: {loggedUser ? loggedUser.username : "Nenhum"}
+        </Text>
+        <Link href="/signUp">Signing Up</Link>
+        <View style={styles.hr} />
       </View>
     </ScrollView>
   );
@@ -61,6 +64,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+  },
+  username: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 10,
   },
   hr: {
     height: 1,
