@@ -1,6 +1,6 @@
 import { addTask, deleteTask, getTasks, updateTask } from "@/api";
 import Task from "@/components/Task";
-import { useTaskFilterStore } from "@/zustand";
+import { useTaskFilterStore, useUserStore } from "@/zustand";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
@@ -15,34 +15,29 @@ import {
   View,
 } from "react-native";
 
-// ✅ Definindo o tipo Task
-type TaskType = {
-  objectId: string;
-  description: string;
-  done: boolean;
-};
-
 export default function MyTodoList() {
+  const loggedUser = useUserStore((state) => state.loggedUser);
   const queryClient = useQueryClient();
   const { data, isFetching, error } = useQuery({
     queryKey: ["tasks"],
     queryFn: getTasks,
   });
-
   const addMutation = useMutation({
     mutationFn: addTask,
     onSuccess: () => {
+      console.log("addTarefas sucesso!");
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
+    onError: (error) => {
+      console.log("addTarefas erro!", error);
+    },
   });
-
   const updateMutation = useMutation({
     mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
   });
-
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
     onSuccess: () => {
@@ -50,47 +45,39 @@ export default function MyTodoList() {
       setDescription("");
     },
   });
-
   const [description, setDescription] = useState("");
   const { taskDoneFilter, setTaskDoneFilter } = useTaskFilterStore(
-    (state) => state
+    (state) => state,
   );
 
-  let tasks: TaskType[] = data?.results || [];
+  let tasks = data?.results || [];
   if (taskDoneFilter) {
     tasks = tasks.filter((task) => !task.done);
   }
 
-  // ✅ Função para adicionar tarefa
   function handleSubmit() {
     if (!description) {
       Alert.alert("Erro", "Descrição é um campo obrigatório!");
       return;
     }
-    addMutation.mutate({ description });
+    addMutation.mutate({ description, sessionToken: loggedUser?.sessionToken });
   }
 
-  // ✅ Função para atualizar tarefa
-  function handleChange(updatedTask: TaskType) {
+  function handleChange(updatedTask) {
     updateMutation.mutate(updatedTask);
   }
 
-  // ✅ Função para deletar tarefa
-  function handleDelete(task: TaskType) {
+  function handleDelete(task) {
     deleteMutation.mutate(task);
   }
 
   return (
     <>
-      {/* ✅ Convertendo o erro para string */}
-      {error && <Text>Erro: {(error as Error).message}</Text>}
-
+      {error && <Text>Erro: {error}</Text>}
       {isFetching && <ActivityIndicator size="large" />}
       {(error || isFetching) && <View style={styles.hr} />}
-
       <View>
         <TextInput
-          style={styles.input}
           placeholder="Descrição da tarefa"
           value={description}
           onChangeText={setDescription}
@@ -101,7 +88,6 @@ export default function MyTodoList() {
           onPress={handleSubmit}
         />
       </View>
-
       <View style={styles.containerFilter}>
         <Text>Ocultar tarefas concluídas</Text>
         <Switch
@@ -112,9 +98,7 @@ export default function MyTodoList() {
           value={taskDoneFilter}
         />
       </View>
-
       <View style={styles.hr} />
-
       <FlatList
         data={tasks}
         renderItem={({ item }) => (

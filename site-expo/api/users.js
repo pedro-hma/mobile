@@ -23,3 +23,24 @@ export const signingUp = async (user) => {
   });
   return data;
 };
+
+export const loggingIn = async (user) => {
+  const { data } = await instance.post("/login", user, {
+    headers: { ...headerJson, ...headerRevocableSession },
+  });
+  return data;
+};
+
+export const loggingOut = async (sessionToken) => {
+  const { data } = await instance.post("/logout", {
+    headers: { "X-Parse-Session-Token": sessionToken },
+  });
+  return data;
+};
+
+export const retrievingCurrentUser = async (sessionToken) => {
+  const { data } = await instance.get("/users/me", {
+    headers: { "X-Parse-Session-Token": sessionToken },
+  });
+  return data;
+};

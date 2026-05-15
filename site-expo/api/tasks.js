@@ -17,10 +17,14 @@ export const getTasks = async () => {
   return data;
 };
 
-export const addTask = async (newTask) => {
-  const { data } = await axios.post(urlBase, newTask, {
-    headers: headersJson,
-  });
+export const addTask = async ({ description, sessionToken }) => {
+  const { data } = await axios.post(
+    urlBase,
+    { description },
+    {
+      headers: { ...headersJson, "X-Parse-Session-Token": sessionToken },
+    },
+  );
   return data;
 };
 

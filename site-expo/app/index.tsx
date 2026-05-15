@@ -10,42 +10,68 @@ export default function Index() {
 
   function calcularAnoNascimento() {
     const idadeNum = parseInt(idade);
+
     if (isNaN(idadeNum) || idadeNum < 0) {
       return "-";
     }
+
     const anoAtual = new Date().getFullYear();
     return (anoAtual - idadeNum).toString();
   }
+
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
       <Text style={styles.title}>Olá Turma!!!</Text>
+
       <View style={styles.hr} />
+
       <View style={styles.containerIdade}>
         <Text>Digite a sua idade</Text>
+
         <TextInput
           style={styles.input}
           keyboardType="numeric"
           value={idade}
           onChangeText={setIdade}
         />
+
         <Text>Você nasceu em</Text>
+
         <TextInput
           style={styles.input}
-          readOnly
+          editable={false}
           value={calcularAnoNascimento()}
         />
+
         <View style={styles.hr} />
-        <Link href="myTodoList">
+
+        <Link href="/myTodoList">
           Lista de Tarefas (filtro {taskDoneFilter ? "ativado" : "desativado"})
         </Link>
+
         <View style={styles.hr} />
+
         <Text style={styles.username}>
-          Usuário Logado: {loggedUser ? loggedUser.username : "Nenhum"}
+          Usuário Logado:{" "}
+          {loggedUser ? (
+            <Link href="/userDetails">{loggedUser.username}</Link>
+          ) : (
+            "Nenhum"
+          )}
         </Text>
-        <Link href="/signUp">Signing Up</Link>
+
+        {loggedUser ? (
+          <Link href="/logout">Sair</Link>
+        ) : (
+          <>
+            <Link href="/login">Login Usuário</Link>
+            <Link href="/signUp">Signing Up</Link>
+          </>
+        )}
+
         <View style={styles.hr} />
       </View>
     </ScrollView>
