@@ -6,8 +6,7 @@ export default function Profissional() {
   return (
     <Screen>
       <SectionTitle eyebrow="Experiencia profissional" title="Pratica aplicada">
-        Experiencias voltadas a entregas reais, organizacao de projetos e
-        construcao de interfaces com foco em clareza.
+        
       </SectionTitle>
 
       <Card>

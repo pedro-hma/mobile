@@ -8,29 +8,15 @@ export default function Sobre() {
   return (
     <Screen>
       <SectionTitle eyebrow="Sobre" title="Perfil tecnico e criativo">
-        Sou desenvolvedor com forte interesse em tecnologia, programacao e
-        criacao de solucoes digitais. Gosto de escrever codigo organizado e
-        transformar ideias em experiencias simples de usar.
       </SectionTitle>
 
       <Card>
         <Text style={styles.body}>
-          Tenho experiencia com Java, Programacao Orientada a Objetos,
-          Estruturas de Dados e desenvolvimento web utilizando React, Next.js e
-          TypeScript. Nesta versao mobile, o curriculo foi reconstruido com
-          React Native, Expo e Expo Router.
+          Tenho familiridade com Java, Programacao Orientada a Objetos,
+          Estruturas de Dados e desenvolvimento web utilizando React, Next.js,
+          TypeScript,React Native, Expo e Expo Router.
         </Text>
       </Card>
-
-      <Card>
-        <Text style={styles.cardTitle}>Tecnologias e modulos usados</Text>
-        <View style={styles.chips}>
-          {technologies.map((tech) => (
-            <Chip key={tech}>{tech}</Chip>
-          ))}
-        </View>
-      </Card>
-
       <Card tone="green">
         <Text style={styles.darkTitle}>Contato</Text>
         <Contact icon="mail-outline" text={profile.email} />
@@ -41,7 +27,6 @@ export default function Sobre() {
     </Screen>
   );
 }
-
 function Contact({ icon, text }) {
   return (
     <View style={styles.contact}>
