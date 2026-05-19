@@ -1,3 +1,5 @@
+import { Link } from "expo-router";
+
 export const profile = {
   name: "Pedro Ayres",
   role: "Desenvolvedor Frontend",
@@ -7,6 +9,7 @@ export const profile = {
   email: "pedrohayres11@gmail.com",
   linkedin: "linkedin.com/in/pedro-henrique-ayres-563145246",
   github: "github.com/pedro-hma",
+  portfolio: "portifolio-beta-ebon.vercel.app"
 };
 
 export const technologies = [
@@ -28,26 +31,26 @@ export const technologies = [
 
 export const academicExperience = [
   {
-    title: "Formacao em desenvolvimento de software",
+    title: "Ciencia da Computacao UNICAP",
     period: "Em andamento",
     description:
-      "Base tecnica construida com programacao estruturada, orientacao a objetos, algoritmos, estruturas de dados e projetos praticos."
-  },
-  {
-    title: "Projetos academicos",
-    period: "2024 - 2026",
-    description:
-      "Aplicacoes em C, Java e JavaScript para praticar logica, modularizacao e interfaces digitais."
+      "Curso bacharelado, com disciplinas tecnicas e desenvolvimento cientifico e tecnologico da computacao, a fim de atender as necessidades das organizacoes e da sociedade."
   }
 ];
 
 export const professionalExperience = [
   {
-    title: "POO / Projeto Final CEO",
-    period: "Projeto Disciplinar",
+    title: "Desenvolvedor Frontend em evolucao",
+    period: "Atual",
     description:
-      "Projeto final desenvolvido durante graduação, aplicando desenvolvimento de software, resolucao de problemas reais e organizacao de entregas."
+      "Criacao de interfaces responsivas, componentes reutilizaveis e paginas com foco em experiencia de uso."
   },
+  {
+    title: "Projeto Final de Estagiario - CEO",
+    period: "Experiencia pratica",
+    description:
+      "Projeto final desenvolvido durante estagio, aplicando desenvolvimento de software, organizacao de entrega e resolucao de problemas."
+  }
 ];
 
 export const projects = [
@@ -55,7 +58,7 @@ export const projects = [
     title: "Prontuario Psicologico",
     description:
       "Sistema web para gerenciamento de prontuarios psicologicos, com foco em organizacao clinica, usabilidade e seguranca das informacoes.",
-    tags: ["React", "Next.js", "TypeScript"]
+    tags: ["React", "Next.js", "TypeScript"],
   },
   {
     title: "Projeto Vida Plena",
@@ -66,8 +69,9 @@ export const projects = [
   {
     title: "Projeto Final de Estagiario - CEO",
     description:
-      "Aplicação de jogo estilo RPG aplicando conceito de POO, interface e interatividade via terminal.",
-    tags: ["Java"]
+      "Aplicacao de jogo estilo RPG aplicando conceito de POO, interface e interatividade via terminal.",
+    tags: ["Java"],
+    link : Link 
   },
   {
     title: "Projeto POO",
@@ -78,12 +82,13 @@ export const projects = [
   {
     title: "Estrutura de Dados",
     description:
-      "Implementacoes de estruturas de dados classicas, com foco em logica e algoritmos. Sistema de Gerenciamento de biblioteca.",
+      "Implementacoes de estruturas de dados classicas, com foco em logica e algoritmos. Sistema de gerenciamento de biblioteca.",
     tags: ["C"]
   },
   {
     title: "Projeto Final PE 2024.1",
-    description: "Projeto final da disciplina de Programacao Estruturada. Aplicação base de música.",
+    description:
+      "Projeto final da disciplina de Programacao Estruturada. Aplicacao base de musica.",
     tags: ["C"]
   }
 ];

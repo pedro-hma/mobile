@@ -9,7 +9,6 @@ const icons = {
   academica: ["school-outline", "school"],
   profissional: ["briefcase-outline", "briefcase"],
   projetos: ["code-slash-outline", "code-slash"],
-  jogo: ["game-controller-outline", "game-controller"]
 };
 
 export default function RootLayout() {
