@@ -9,6 +9,7 @@ const icons = {
   academica: ["school-outline", "school"],
   profissional: ["briefcase-outline", "briefcase"],
   projetos: ["code-slash-outline", "code-slash"],
+  jogo: ["game-controller-outline", "game-controller"]
 };
 
 export default function RootLayout() {
@@ -48,6 +49,7 @@ export default function RootLayout() {
         <Tabs.Screen name="academica" options={{ title: "Academica" }} />
         <Tabs.Screen name="profissional" options={{ title: "Carreira" }} />
         <Tabs.Screen name="projetos" options={{ title: "Projetos" }} />
+        <Tabs.Screen name="jogo" options={{ title: "Jogo" }} />
       </Tabs>
     </>
   );

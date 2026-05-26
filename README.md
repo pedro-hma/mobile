@@ -17,7 +17,7 @@ Aplicativo de curriculo/portfolio desenvolvido com React Native, Expo e Expo Rou
 - Visual mobile personalizado.
 - Conteudo baseado no portfolio original publicado na Vercel.
 - Tela de jogo integrada ao app, sem link externo.
-- Jogo da memoria com pontuacao, pares encontrados e botao de reiniciar.
+- Jogo da forca com dicas, teclado interativo e contagem de erros.
 
 ## Como rodar
 

@@ -29,6 +29,12 @@ export default function Home() {
               <Text style={styles.primaryText}>Projetos</Text>
             </TouchableOpacity>
           </Link>
+          <Link href="/jogo" asChild>
+            <TouchableOpacity style={styles.secondaryButton}>
+              <Ionicons name="game-controller" size={18} color="#0f6b5f" />
+              <Text style={styles.secondaryText}>Jogar</Text>
+            </TouchableOpacity>
+          </Link>
         </View>
       </LinearGradient>
 
